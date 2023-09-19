@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Speech.Synthesis;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace TTS
 {
@@ -29,10 +19,32 @@ namespace TTS
         public void OnClick1(object sender, RoutedEventArgs e)
         {
             //MessageBox.Show(userInput.Text, "What you entered", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.Yes);
-            var synthesizer = new SpeechSynthesizer();
-            synthesizer.SetOutputToWaveFile("output.wav");
-            //synthesizer.SetOutputToDefaultAudioDevice();
-            synthesizer.Speak(userInput.Text);
+            
+            if (FileLocationBox.Text != "")
+            {
+                var synthesizer = new SpeechSynthesizer();
+                synthesizer.SetOutputToWaveFile(FileLocationBox.Text);
+                synthesizer.Speak(userInput.Text);
+                synthesizer.SetOutputToNull();    
+            }
+            else
+            {
+                MessageBox.Show("Please select a file to save.", "No File Selected", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void FileLocationBtn_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog folderPicker = new CommonOpenFileDialog();
+            folderPicker.IsFolderPicker = false;
+            folderPicker.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (folderPicker.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                FileLocationBox.Text = folderPicker.FileName;
+            };
+
+            
         }
     }
 }
